@@ -1,14 +1,16 @@
 package com.libary.system.service;
 
 import com.libary.system.domain.Book;
+import com.libary.system.exception.BadRequestException;
 import com.libary.system.mapper.BookMapper;
 import com.libary.system.repository.BookRepository;
 import com.libary.system.requests.BookPostRequestBody;
 import com.libary.system.requests.BookPutRequestBody;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -18,7 +20,11 @@ public class BookService {
 
     private final BookRepository bookRepository;
 
-    public List<Book> listAll(){
+    public Page<Book> listAll(Pageable pageable) {
+        return bookRepository.findAll(pageable);
+    }
+
+    public List<Book> listAllNonPageable() {
         return bookRepository.findAll();
     }
 
@@ -32,9 +38,10 @@ public class BookService {
 
     public Book findByIdOrThrowBadRequestException(Long id) {
         return bookRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Book not Found"));
+                .orElseThrow(() -> new BadRequestException("Book not Found"));
     }
 
+    @Transactional
     public Book save(BookPostRequestBody bookPostRequestBody) {
         return bookRepository.save(BookMapper.INSTANCE.toBook(bookPostRequestBody));
     }
@@ -49,7 +56,6 @@ public class BookService {
         book.setId(savedBook.getId());
         bookRepository.save(book);
     }
-
 
 
 }
