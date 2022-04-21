@@ -6,13 +6,13 @@ import javax.validation.constraints.NotEmpty;
 
 @Data
 public class BookPostRequestBody {
-    @NotEmpty(message = "The title cannot be empty")
+    @NotEmpty(message = "Book title cannot be empty")
     private String title;
 
-    @NotEmpty(message = "The isbn cannot be empty")
+    @NotEmpty(message = "Book isbn cannot be empty")
     private String isbn;
 
-    @NotEmpty(message = "The author name cannot be empty")
+    @NotEmpty(message = "Author name cannot be empty")
     private String author;
 
     private String description;
